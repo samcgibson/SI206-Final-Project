@@ -13,6 +13,7 @@ january31 = '0022200768'
 february1 = '0022200770'
 february28 = '0022200932'
 march22 = '0022201092' # last game on march 22nd, 2023
+#test
 
 gameIdList = []
 for id in range(int(february1), int(february28) + 1): # add game IDs to gamelist
