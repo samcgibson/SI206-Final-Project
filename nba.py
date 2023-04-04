@@ -17,7 +17,7 @@ march22 = '0022201092' # last game on march 22nd, 2023
 #test
 
 gameIdList = []
-for id in range(int(february1), int(february1) + 24): # add game IDs to gamelist
+for id in range(int(february1), int(february28) + 1): # add game IDs to gamelist
     gameIdList.append("00" + str(id)) # have to add '00' here because integers don't allow leading 0's
 
 firstbucketsdict = {}
@@ -39,8 +39,10 @@ def open_database(db_name):
     return cur, conn
 
 cur, conn = open_database('NBA.db')
+# cur.execute("DROP TABLE Games")
 
-def make_games_table(list, cur, conn):
+
+def make_games_table(list, cur, conn, batch_size=25):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
     for gameId in list:
         box = boxscore.BoxScore(gameId)
@@ -71,6 +73,7 @@ def make_teams_table(cur, conn):
         cur.execute("INSERT OR IGNORE INTO Teams (team_id, team_name) VALUES (?, ?)", (team['id'], team['full_name']))
 
     conn.commit()
+
 make_teams_table(cur, conn)
 make_games_table(gameIdList, cur, conn)
 

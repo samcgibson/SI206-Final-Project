@@ -1,11 +1,12 @@
 from nba_api.live.nba.endpoints import playbyplay
 from nba_api.live.nba.endpoints import boxscore
+from nba_api.stats.static import teams
+
 import time
 import re
-
-time.sleep(.600)
-
-start_time = time.time()
+import sqlite3
+import json
+import os
 
 october18 = '0022200001' # first game of the regular season october 18th, 2022
 january1 = '022200547'
@@ -22,11 +23,20 @@ for id in range(int(february1), int(february28) + 1): # add game IDs to gamelist
 firstbucketsdict = {}
 firstbucketslist = []
 
-for gameId in gameIdList:
-    pbp = playbyplay.PlayByPlay(gameId)
-    pbpdict = pbp.get_dict()
+# for gameId in gameIdList:
+#     pbp = playbyplay.PlayByPlay(gameId)
+#     pbpdict = pbp.get_dict()
+#     pbpjson = pbp.get_json()
     
-    box = boxscore.BoxScore(gameId)
-    bdict = box.get_dict()
+    # box = boxscore.BoxScore(gameId)
+    # bdict = box.get_dict()
+    # bjson = box.get_json()
 
-print(bdict)
+def open_database(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
+
+cur, conn = open_database('NBA.db')
+cur.execute("DROP TABLE Games")
