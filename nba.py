@@ -63,6 +63,5 @@ def make_games_table(list, cur, conn):
     conn.commit()
 
 def make_teams_table(cur, conn):
-    
     pass
 # make_games_table(gameIdList, cur, conn)
