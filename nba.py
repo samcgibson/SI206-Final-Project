@@ -1,5 +1,7 @@
 from nba_api.live.nba.endpoints import playbyplay
 from nba_api.live.nba.endpoints import boxscore
+from nba_api.stats.static import teams
+
 import time
 import re
 import sqlite3
@@ -36,13 +38,13 @@ def open_database(db_name):
     cur = conn.cursor()
     return cur, conn
 
-cur, conn = open_database('Games.db')
+cur, conn = open_database('NBA.db')
 
 def make_games_table(list, cur, conn):
+    cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
     for gameId in list:
         box = boxscore.BoxScore(gameId)
         data = box.get_dict()
-        cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
         gid = int(data['game']['gameId'])
         date = data['game']['gameTimeLocal'].split("T")[0]
         date = int(date.replace('-', ''))
@@ -63,5 +65,12 @@ def make_games_table(list, cur, conn):
     conn.commit()
 
 def make_teams_table(cur, conn):
-    pass
-# make_games_table(gameIdList, cur, conn)
+    teamlist = teams.get_teams()
+    cur.execute("CREATE TABLE IF NOT EXISTS Teams (team_id PRIMARY KEY, team_name TEXT UNIQUE)")
+    for team in teamlist:
+        cur.execute("INSERT OR IGNORE INTO Teams (team_id, team_name) VALUES (?, ?)", (team['id'], team['full_name']))
+
+    conn.commit()
+make_teams_table(cur, conn)
+make_games_table(gameIdList, cur, conn)
+
