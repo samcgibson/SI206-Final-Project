@@ -24,4 +24,5 @@ def open_database(db_name):
     return cur, conn
 
 cur, conn = open_database('NBA.db')
-cur.execute("DROP TABLE Games")
+
+cur.execute('DROP TABLE FirstBuckets')

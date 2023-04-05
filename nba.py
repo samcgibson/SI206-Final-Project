@@ -25,6 +25,8 @@ def open_database(db_name):
 
 cur, conn = open_database('NBA.db')
 
+
+
 # def make_games_table(list, cur, conn):
 #     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
 
@@ -59,30 +61,30 @@ cur, conn = open_database('NBA.db')
 
 # make_games_table(gameIdList, cur, conn)
 
-def make_players_table(list, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS Players (player_id INTEGER PRIMARY KEY, player_name TEXT UNIQUE)")
+# def make_players_table(list, cur, conn):
+#     cur.execute("CREATE TABLE IF NOT EXISTS Players (player_id INTEGER PRIMARY KEY, player_name TEXT UNIQUE)")
 
-    cur.execute("SELECT COUNT(*) FROM Players")
-    result = cur.fetchone()[0]
+#     cur.execute("SELECT COUNT(*) FROM Players")
+#     result = cur.fetchone()[0]
 
-    for i in range(result, result + 25):
-        if i >= len(list):
-            break
-        pbp = playbyplay.PlayByPlay(list[i])
-        data = pbp.get_dict()
-        for shot in data['game']['actions']:
-            if shot['period'] == 1 and shot.get('shotResult') == 'Made':
+#     for i in range(result, result + 25):
+#         if i >= len(list):
+#             break
+#         pbp = playbyplay.PlayByPlay(list[i])
+#         data = pbp.get_dict()
+#         for shot in data['game']['actions']:
+#             if shot['period'] == 1 and shot.get('shotResult') == 'Made':
                 
-                pname = shot['playerNameI']
-                pid = shot['personIdsFilter'][0]
-                break
+#                 pname = shot['playerNameI']
+#                 pid = shot['personId']
+#                 break
         
-        cur.execute("INSERT OR IGNORE INTO Players (player_id, player_name) VALUES (?, ?)", (pid, pname))
-        print(f'Inserted {pname} ({pid}) into the database.')    
+#         cur.execute("INSERT OR IGNORE INTO Players (player_id, player_name) VALUES (?, ?)", (pid, pname))
+#         print(f'Inserted {pname} ({pid}) into the database.')    
 
-    conn.commit()
+#     conn.commit()
 
-make_players_table(gameIdList, cur, conn)
+# make_players_table(gameIdList, cur, conn)
 
 # def make_teams_table(cur, conn):
 #     teamlist = teams.get_teams()
@@ -94,4 +96,35 @@ make_players_table(gameIdList, cur, conn)
 
 # make_teams_table(cur, conn)
 
+
+
+def make_firstbucket_table(list, cur, conn):
+    cur.execute("CREATE TABLE IF NOT EXISTS FirstBuckets (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, team_id INTEGER, game_id INTEGER, shot_distance FLOAT, points INTEGER, is_field_goal INTEGER)")
+
+    cur.execute("SELECT COUNT(*) FROM FirstBuckets")
+    result = cur.fetchone()[0]
+
+    for i in range(result, result + 25):
+        if i >= len(list):
+            break
+        pbp = playbyplay.PlayByPlay(list[i])
+        data = pbp.get_dict()
+        gid = list[i]
+        for shot in data['game']['actions']:
+            if shot['period'] == 1 and shot.get('shotResult') == 'Made':
+                
+                pid = shot['personId']
+                tid = shot['teamId']
+                sdistance = shot.get('shotDistance', 15.00)
+                ps = shot['pointsTotal']
+                isfg = shot['isFieldGoal']
+
+                break
+
+        cur.execute("INSERT INTO FirstBuckets (player_id, team_id, game_id, shot_distance, points, is_field_goal) VALUES (?, ?, ?, ?, ?, ?)", (pid, tid, gid, sdistance, ps, isfg))
+        print(f'Inserted a shot into row {i +1}.')
+
+    conn.commit()
+
+make_firstbucket_table(gameIdList, cur, conn)
 
