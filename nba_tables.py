@@ -23,8 +23,6 @@ def open_database(db_name):
 
 cur, conn = open_database('NBA.db')
 
-# cur.execute('DROP TABLE Players')
-
 def make_games_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
 
@@ -100,7 +98,7 @@ def make_teams_table(cur, conn):
 make_teams_table(cur, conn)
 
 def make_firstbucket_table(list, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS FirstBuckets (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, team_id INTEGER, game_id INTEGER, shot_distance FLOAT, points INTEGER, is_field_goal INTEGER)")
+    cur.execute("CREATE TABLE IF NOT EXISTS FirstBuckets (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, team_id INTEGER, game_id INTEGER, shot_distance FLOAT, points INTEGER, is_field_goal INTEGER, xpos FLOAT, ypos FLOAT)")
 
     cur.execute("SELECT COUNT(*) FROM FirstBuckets")
     result = cur.fetchone()[0]
@@ -119,10 +117,12 @@ def make_firstbucket_table(list, cur, conn):
                 sdistance = shot.get('shotDistance', 15.00)
                 ps = shot['pointsTotal']
                 isfg = shot['isFieldGoal']
+                x = shot['x']
+                y = shot['y']
 
                 break
 
-        cur.execute("INSERT INTO FirstBuckets (player_id, team_id, game_id, shot_distance, points, is_field_goal) VALUES (?, ?, ?, ?, ?, ?)", (pid, tid, gid, sdistance, ps, isfg))
+        cur.execute("INSERT INTO FirstBuckets (player_id, team_id, game_id, shot_distance, points, is_field_goal, xpos, ypos) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (pid, tid, gid, sdistance, ps, isfg, x, y))
         print(f'Inserted a shot into row {i +1}.')
 
     conn.commit()

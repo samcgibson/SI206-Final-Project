@@ -15,8 +15,6 @@ path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/'+'NBA.db')
 cur = conn.cursor()
 
-f, ax = plt.subplots(figsize=(6.5, 6.5))
-sb.despine(f, left=True, bottom=True)
 
 def make_conversion_graph(cur):
     cur.execute("SELECT DISTINCT Games.day, Teams.team_name, FirstBuckets.team_id, Games.winner_id, Games.score_diff "
@@ -33,7 +31,7 @@ def make_conversion_graph(cur):
 
     df = pd.DataFrame(tuples, columns=['day', 'team', 'team_id', 'winner_id', 'Score Difference', 'Result'])
 
-    g = sb.scatterplot(data = df, x = 'day', y = 'team', hue = 'Result', size = 'Score Difference', sizes=(20, 300), alpha=.75, palette="muted", ax=ax, legend='brief')
+    g = sb.scatterplot(data = df, x = 'day', y = 'team', hue = 'Result', size = 'Score Difference', sizes=(20, 300), alpha=.75, palette="muted", legend='brief')
     sb.move_legend(
         g, "lower center",
         bbox_to_anchor=(.5, .975), ncol=3, title=None, frameon=False,
@@ -70,7 +68,6 @@ def make_shotdistance_graph(cur):
     plt.ylabel('Shot Distance (by ft.)')
 
     plt.title('First Basket Shot Distance vs. Game Outcome')
-
     plt.show()
 
 make_shotdistance_graph(cur)

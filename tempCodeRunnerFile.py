@@ -4,8 +4,6 @@ from nba_api.stats.static import teams
 from nba_api.stats.static import players
 
 
-import time
-import re
 import sqlite3
 import json
 import os
@@ -25,4 +23,4 @@ def open_database(db_name):
 
 cur, conn = open_database('NBA.db')
 
-cur.execute('DROP TABLE Players')
+cur.execute('DROP TABLE FirstBuckets')
