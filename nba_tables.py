@@ -122,10 +122,26 @@ def make_firstbucket_table(list, cur, conn):
 
                 break
 
-        cur.execute("INSERT INTO FirstBuckets (player_id, team_id, game_id, shot_distance, points, is_field_goal, xpos, ypos) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (pid, tid, gid, sdistance, ps, isfg, x, y))
+        cur.execute("INSERT OR IGNORE INTO FirstBuckets (player_id, team_id, game_id, shot_distance, points, is_field_goal, xpos, ypos) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (pid, tid, gid, sdistance, ps, isfg, x, y))
         print(f'Inserted a shot into row {i +1}.')
 
     conn.commit()
 
 make_firstbucket_table(gameIdList, cur, conn)
+
+def make_shottype_table(cur, conn):
+    cur.execute("CREATE TABLE IF NOT EXISTS ShotTypes (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, shot_type TEXT UNIQUE)")
+    
+    for i in range(3):
+        if i == 0:
+            cur.execute("INSERT OR IGNORE INTO ShotTypes (points, shot_type) VALUES (?, ?)", (1, 'Free Throw'))
+        if i == 1:
+            cur.execute("INSERT OR IGNORE INTO ShotTypes (points, shot_type) VALUES (?, ?)", (2, '2-Pointer'))
+        if i == 2:
+            cur.execute("INSERT OR IGNORE INTO ShotTypes (points, shot_type) VALUES (?, ?)", (3, '3-Pointer'))
+        
+    conn.commit()
+
+make_shottype_table(cur, conn)
+
 
