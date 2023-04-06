@@ -30,9 +30,9 @@ tuples = []
 
 for row in cur:
     if row[2] == row[3]:
-        tuples.append(row + ('won',))
+        tuples.append(row + ('Won',))
     else:
-        tuples.append(row + ('lost',))
+        tuples.append(row + ('Lost',))
 
 # print(tuples)
 
@@ -44,6 +44,11 @@ for row in cur:
 
 df = pd.DataFrame(tuples)
 
-sb.lineplot(data=df, x=1, y = 4, hue=7)
+sb.scatterplot(data=df, x=1, y = 4, hue=7, palette= ['mediumseagreen', 'orangered'])
+
+plt.xlabel('Games in February 2023 (by Game ID)')
+plt.ylabel('Shot Distance (by ft.)')
+
+plt.title('First Basket Shot Distance vs. Game Outcome')
 
 plt.show()
