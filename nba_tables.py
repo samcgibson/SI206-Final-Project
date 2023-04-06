@@ -4,8 +4,6 @@ from nba_api.stats.static import teams
 from nba_api.stats.static import players
 
 
-import time
-import re
 import sqlite3
 import json
 import os
