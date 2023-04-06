@@ -9,66 +9,68 @@ import numpy as np
 import random
 import string
 
+sb.set_theme(style="white")
 
 path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/'+'NBA.db')
 cur = conn.cursor()
 
-cur.execute("SELECT FirstBuckets.player_id, Players.player_name, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
-            "FROM FirstBuckets JOIN Players ON FirstBuckets.player_id = Players.player_id "
-            " JOIN Teams ON FirstBuckets.team_id = Teams.team_id")
+f, ax = plt.subplots(figsize=(6.5, 6.5))
+sb.despine(f, left=True, bottom=True)
 
-firstbucketlist = []
-for row in cur:
-    firstbucketlist.append(row[4])
+def make_conversion_graph(cur):
+    cur.execute("SELECT DISTINCT Games.day, Teams.team_name, FirstBuckets.team_id, Games.winner_id, Games.score_diff "
+                "FROM Games JOIN FirstBuckets ON Games.game_id = FirstBuckets.game_id "
+                "JOIN Teams ON Teams.team_id = FirstBuckets.team_id "  
+                "ORDER BY Games.day ")
+    tuples = []
 
-tdict = dict(Counter(firstbucketlist))
+    for row in cur:
+        if row[2] == row[3]:
+            tuples.append(row + ('Won',))
+        else:
+            tuples.append(row + ('Lost',))
 
-sorted_dict = dict(sorted(tdict.items(), key=lambda x:x[1]))
+    df = pd.DataFrame(tuples, columns=['day', 'team', 'team_id', 'winner_id', 'Score Difference', 'Result'])
 
-tlist = list(sorted_dict.items())
-
-dct = {}
-c = 0
-
-for tup in tlist:
-    dct[c] = tup
-    c += 1
-
-df = pd.DataFrame.from_dict(dct, orient='index', columns=['team', 'count'])
-
-g = sb.histplot(y = df['count'], hue = df['team'], multiple='stack')
-sb.move_legend(
-    g, "lower center",
-    bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False,
+    g = sb.scatterplot(data = df, x = 'day', y = 'team', hue = 'Result', size = 'Score Difference', sizes=(20, 300), alpha=.75, palette="muted", ax=ax, legend='brief')
+    sb.move_legend(
+        g, "lower center",
+        bbox_to_anchor=(.5, .975), ncol=3, title=None, frameon=False,
 )
-plt.show()
+    plt.xlabel('Games in February 2023 (by date)')
+    plt.ylabel('Team')
 
-# def make_shotdistance_graph(cur):
+    plt.grid()
+    plt.show()
 
-#     cur.execute("SELECT DISTINCT Players.player_name, Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
-#                 "FROM FirstBuckets JOIN Players ON FirstBuckets.player_id = Players.player_id "
-#                 "JOIN Games ON FirstBuckets.game_id = Games.game_id "
-#                 "JOIN Teams ON FirstBuckets.team_id = Teams.team_id ")
+make_conversion_graph(cur)
 
-#     tuples = []
+def make_shotdistance_graph(cur):
 
-#     for row in cur:
-#         if row[2] == row[3]:
-#             tuples.append(row + ('Won',))
-#         else:
-#             tuples.append(row + ('Lost',))
+    cur.execute("SELECT DISTINCT Players.player_name, Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
+                "FROM FirstBuckets JOIN Players ON FirstBuckets.player_id = Players.player_id "
+                "JOIN Games ON FirstBuckets.game_id = Games.game_id "
+                "JOIN Teams ON FirstBuckets.team_id = Teams.team_id ")
+
+    tuples = []
+
+    for row in cur:
+        if row[2] == row[3]:
+            tuples.append(row + ('Won',))
+        else:
+            tuples.append(row + ('Lost',))
 
 
-#     df = pd.DataFrame(tuples)
+    df = pd.DataFrame(tuples)
 
-#     sb.scatterplot(data=df, x=1, y = 4, hue=7, palette= ['mediumseagreen', 'orangered'])
+    sb.scatterplot(data=df, x=1, y = 4, hue=7, palette= ['mediumseagreen', 'orangered'])
 
-#     plt.xlabel('Games in February 2023 (by Game ID)')
-#     plt.ylabel('Shot Distance (by ft.)')
+    plt.xlabel('Games in February 2023 (by Game ID)')
+    plt.ylabel('Shot Distance (by ft.)')
 
-#     plt.title('First Basket Shot Distance vs. Game Outcome')
+    plt.title('First Basket Shot Distance vs. Game Outcome')
 
-#     plt.show()
+    plt.show()
 
-# make_shotdistance_graph(cur)
+make_shotdistance_graph(cur)
