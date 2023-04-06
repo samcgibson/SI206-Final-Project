@@ -2,6 +2,11 @@ import sqlite3
 import json
 import os
 from collections import Counter
+import matplotlib.pyplot as plt
+import seaborn as sb
+import pandas as pd
+
+sb.set()
 
 path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/'+'NBA.db')
@@ -11,9 +16,17 @@ cur.execute("SELECT FirstBuckets.player_id, Players.player_name, FirstBuckets.sh
 
 firstbucketlist = []
 for row in cur:
-    firstbucketlist.append(row[1])
+    firstbucketlist.append((row[1], row[2]))
 
-firstbucketdict = dict(Counter(firstbucketlist))
+firstbucketdict = dict(firstbucketlist)
 
-sorted_dict = dict(sorted(firstbucketdict.items(), key=lambda x: x[1], reverse=True))
-print(sorted_dict)
+print(firstbucketdict)
+
+# firstbucketdict = dict(Counter(firstbucketlist))
+
+# sorted_dict = dict(sorted(firstbucketdict.items(), key=lambda x: x[1], reverse=True))
+
+# my_df = pd.DataFrame(firstbucketdict.items())
+# sb.scatterplot(x=0, y=1, data=my_df)
+
+# plt.show()
