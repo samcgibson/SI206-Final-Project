@@ -2,8 +2,6 @@ from nba_api.live.nba.endpoints import playbyplay
 from nba_api.live.nba.endpoints import boxscore
 from nba_api.stats.static import teams
 from nba_api.stats.static import players
-
-
 import sqlite3
 import json
 import os
