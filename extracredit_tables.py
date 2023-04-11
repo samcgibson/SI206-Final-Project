@@ -23,7 +23,11 @@ url = f'https://api.nytimes.com/svc/archive/v1/2023/3.json?api-key={apikey}'
 r = requests.get(url)
 articlesjson = r.json()
 
-slist = list(range(182))
+alist = []
+
+for article in articlesjson['response']['docs']:
+    if article['news_desk'] == 'Sports' and article['document_type'] == 'article' and article['word_count']:
+        alist.append(article)
 
 def create_sportsarticles_table(lst, cur, conn):
     cur.execute('CREATE TABLE IF NOT EXISTS SportsArticles (id INTEGER PRIMARY KEY AUTOINCREMENT, headline TEXT UNIQUE, pub_date INTEGER, print_page INTEGER, word_count INTEGER, print_status INTEGER)')
@@ -33,22 +37,20 @@ def create_sportsarticles_table(lst, cur, conn):
     for i in range(result, result + 25):
         if i >= len(lst):
             break
-        for article in articlesjson['response']['docs']:
-            if article['news_desk'] == 'Sports' and article['document_type'] == 'article' and article['word_count']:
-                pday = int(article['pub_date'].split('T')[0].replace('-', ''))   
-                hline = article['headline']['main']
-                pnum = int(article.get('print_page', 0))
-                wc = article['word_count']
-                if pnum == 0:
-                    cur.execute('INSERT OR IGNORE INTO SportsArticles (headline, pub_date, print_page, word_count, print_status) VALUES (?, ?, ?, ?, ?)', (hline, pday, pnum, wc, pnum))
-                else:
-                    cur.execute('INSERT OR IGNORE INTO SportsArticles (headline, pub_date, print_page, word_count, print_status) VALUES (?, ?, ?, ?, ?)', (hline, pday, pnum, wc, 1))
-        
+        pday = int(lst[i]['pub_date'].split('T')[0].replace('-', ''))   
+        hline = lst[i]['headline']['main']
+        pnum = int(lst[i].get('print_page', 0))
+        wc = lst[i]['word_count']
+        if pnum == 0:
+            cur.execute('INSERT OR IGNORE INTO SportsArticles (headline, pub_date, print_page, word_count, print_status) VALUES (?, ?, ?, ?, ?)', (hline, pday, pnum, wc, pnum))
+        else:
+            cur.execute('INSERT OR IGNORE INTO SportsArticles (headline, pub_date, print_page, word_count, print_status) VALUES (?, ?, ?, ?, ?)', (hline, pday, pnum, wc, 1))
+
         print(f'Added article #{i+1}.')
 
     conn.commit()
 
-create_sportsarticles_table(slist, cur, conn)
+create_sportsarticles_table(alist, cur, conn)
 
 def create_printstatus_table(cur, conn):
 
