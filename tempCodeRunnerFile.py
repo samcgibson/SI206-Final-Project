@@ -14,5 +14,5 @@ def open_database(db_name):
 
 cur, conn = open_database('NYT.db')
 
-# cur.execute('DROP TABLE SportsArticles')
+cur.execute('DROP TABLE SportsArticles')
 cur.execute('DROP TABLE PrintStatus')
