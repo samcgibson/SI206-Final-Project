@@ -98,7 +98,7 @@ def make_teams_table(cur, conn):
         if i >= 30:
             break
         cur.execute("INSERT OR IGNORE INTO Teams (team_id, team_name) VALUES (?, ?)", (teamlist[i]['id'], teamlist[i]['full_name']))
-        print(i)
+        print(f'Added team #{i}.')
 
     conn.commit()
 
