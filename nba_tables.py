@@ -21,6 +21,7 @@ def open_database(db_name):
 
 cur, conn = open_database('NBA.db')
 
+
 def make_games_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
 
@@ -74,7 +75,7 @@ def make_players_table(list, cur, conn):
                 break
 
         cur.execute("INSERT OR IGNORE INTO Players (player_id, player_name) VALUES (?, ?)", (pid, pname))
-        print(f'Inserted {pname} ({pid}) into the database (Row {i +1}).')   
+        # print(f'Inserted {pname} ({pid}) into the database (Row {i +1}).')   
 
     conn.commit()
 
