@@ -51,6 +51,8 @@ def make_basic_charts(cur):
 
     df = pd.DataFrame(tuples, columns=['points', 'shot_type', 'team', 'winner', 'Outcome'])
 
+    df.to_csv('basic_charts.csv')
+
     sb.histplot(data = df, y = df['shot_type'], hue = df['Outcome'], multiple='stack', palette= ['mediumseagreen', 'red'])
 
     axs[1].set_xlabel('Occurences in February 2023 Games')
