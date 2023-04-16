@@ -82,6 +82,8 @@ def make_shotdistance_graph(cur):
 
     df = pd.DataFrame(tuples)
 
+    df.to_csv('shot_distance.csv')
+
     sb.scatterplot(data=df, x=1, y = 4, hue=7, palette= ['mediumseagreen', 'red'])
 
     plt.xlabel('Games in February 2023 (by Game ID)')
@@ -107,6 +109,9 @@ def make_shotchart(cur):
     ftpos_away = {'xpos': 79.79, 'ypos': 50}
 
     df = pd.DataFrame(tuples, columns=['xpos', 'ypos', 'game_id', 'team_id', 'hometeam_id', 'Status'])
+
+    df.to_csv('shot_chart.csv')
+
     pd.set_option('display.max_rows', 1000)
 
     df.loc[df['Status'] == 'Home', ['xpos', 'ypos']] = df.loc[df['Status'] == 'Home', ['xpos', 'ypos']].fillna(value=ftpos_home)
@@ -146,6 +151,8 @@ def make_conversion_graph(cur):
 
 
     df = pd.DataFrame(tuples, columns=['day', 'team', 'team_id', 'winner_id', 'Score Difference', 'Result'])
+
+    df.to_csv('conversion_graph.csv')
 
     sb.set(rc={"figure.figsize":(12, 7.5)})
 
