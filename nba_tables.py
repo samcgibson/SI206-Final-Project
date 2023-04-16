@@ -85,8 +85,6 @@ def make_players_table(list, cur, conn):
 
 make_players_table(gameIdList, cur, conn)
 
-cur.execute('DROP TABLE Teams')
-
 def make_teams_table(cur, conn):
     teamlist = teams.get_teams()
     cur.execute("CREATE TABLE IF NOT EXISTS Teams (team_id INTEGER PRIMARY KEY, team_name TEXT UNIQUE)")
