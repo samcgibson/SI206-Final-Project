@@ -164,7 +164,7 @@ def make_conversion_graph(cur):
     plt.title('Size of circle is how much team won / lost by. The large gap in data is during All-Star Weekend.')
     plt.tight_layout()
     plt.grid()
-    # plt.show()
+    plt.show()
 
     lossdenom = len(scoredifflostlist)
     windenom = len(scorediffwinlist)
@@ -178,6 +178,7 @@ def make_conversion_graph(cur):
     for sdiff in scorediffwinlist:
         scorewtotal += int(sdiff.split(':')[0])
 
-    print(round((scorewtotal / windenom), 2), round((scoreltotal / lossdenom), 2))
+    print(f'Average score difference (win) when getting first basket: {round((scorewtotal / windenom), 2)}.')
+    print(f'Average score difference (loss) when getting first basket: {round((scoreltotal / lossdenom), 2)}.')
 
 make_conversion_graph(cur)
