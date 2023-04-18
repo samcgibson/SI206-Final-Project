@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import csv
 
 def open_database(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -40,9 +41,25 @@ def create_month_dict(start_month, end_month):
     
     return month_dict
 
-print(create_month_dict(4, 10))
+yankees_win_pcts = create_month_dict(4, 10)
 
-# def write_csv(month_dict):
+def write_csv(month_dict, file_name):
+
+    base_path = os.path.dirname(__file__)
+    full_path = os.path.join(base_path, file_name)
+    f = open(full_path, 'w')
+    csv_writer = csv.writer(f)
+    
+    header = ['month', 'win_pct']
+    csv_writer.writerow(header)
+    
+    for tup in month_dict.items():
+        csv_writer.writerow(tup)
+    
+    f.close()
+    return None
+
+write_csv(yankees_win_pcts, 'monthly_win_pct.csv')
 
 # def create_plot()
     
