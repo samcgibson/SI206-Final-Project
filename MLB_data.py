@@ -174,3 +174,5 @@ def main():
     make_games_table(yankees_tuple_list, cur, conn)
 
 main()
+
+#finished
