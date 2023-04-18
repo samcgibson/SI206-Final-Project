@@ -134,9 +134,9 @@ def make_shottype_table(cur, conn):
         
     conn.commit()
 
-# make_games_table(gameIdList, cur, conn)
-make_players_table(gameIdList, cur, conn)
-# make_teams_table(cur, conn)
-# make_firstbucket_table(gameIdList, cur, conn)
-# make_shottype_table(cur, conn)
+make_games_table(gameIdList, cur, conn)
+# make_players_table(gameIdList, cur, conn)
+make_teams_table(cur, conn)
+make_firstbucket_table(gameIdList, cur, conn)
+make_shottype_table(cur, conn)
 
