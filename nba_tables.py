@@ -21,7 +21,6 @@ def open_database(db_name):
 
 cur, conn = open_database('NBA.db')
 
-
 def make_games_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
 
@@ -54,8 +53,6 @@ def make_games_table(list, cur, conn):
     
     conn.commit()
 
-make_games_table(gameIdList, cur, conn)
-
 def make_players_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Players (player_id INTEGER PRIMARY KEY, player_name TEXT UNIQUE)")
 
@@ -75,16 +72,9 @@ def make_players_table(list, cur, conn):
                 break
 
         cur.execute("INSERT OR IGNORE INTO Players (player_id, player_name) VALUES (?, ?)", (pid, pname))
-        # print(f'Inserted {pname} ({pid}) into the database (Row {i +1}).')   
+        print(f'Inserted {pname} ({pid}) into the database (Row {i +1}).')   
 
     conn.commit()
-
-    cur.execute("SELECT COUNT(*) FROM Players")
-    num_rows = cur.fetchone()[0]
-    if num_rows == 78:
-        print("----All players added----")
-
-make_players_table(gameIdList, cur, conn)
 
 def make_teams_table(cur, conn):
     teamlist = teams.get_teams()
@@ -100,8 +90,6 @@ def make_teams_table(cur, conn):
         print(f'Added team #{i}.')
 
     conn.commit()
-
-make_teams_table(cur, conn)
 
 def make_firstbucket_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS FirstBuckets (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, team_id INTEGER, game_id INTEGER, shot_distance FLOAT, points INTEGER, is_field_goal INTEGER, xpos FLOAT, ypos FLOAT)")
@@ -133,8 +121,6 @@ def make_firstbucket_table(list, cur, conn):
 
     conn.commit()
 
-make_firstbucket_table(gameIdList, cur, conn)
-
 def make_shottype_table(cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS ShotTypes (primary_key INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, shot_type TEXT UNIQUE)")
     
@@ -148,6 +134,9 @@ def make_shottype_table(cur, conn):
         
     conn.commit()
 
-make_shottype_table(cur, conn)
-
+# make_games_table(gameIdList, cur, conn)
+make_players_table(gameIdList, cur, conn)
+# make_teams_table(cur, conn)
+# make_firstbucket_table(gameIdList, cur, conn)
+# make_shottype_table(cur, conn)
 

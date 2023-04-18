@@ -64,7 +64,7 @@ def make_basic_charts(cur):
 
 make_basic_charts(cur)
 
-def make_shotdistance_graph(cur):
+def make_shotdistance_graph(cur): 
 
     cur.execute("SELECT DISTINCT Players.player_name, Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
                 "FROM FirstBuckets JOIN Players ON FirstBuckets.player_id = Players.player_id "
