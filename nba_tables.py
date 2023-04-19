@@ -49,7 +49,7 @@ def make_games_table(list, cur, conn):
             scorediff = data['game']['awayTeam']['score'] - data['game']['homeTeam']['score']
         
         cur.execute("INSERT OR IGNORE INTO Games (game_id, day, time, home_team_id, away_team_id, winner_id, score_diff) VALUES (?, ?, ?, ?, ?, ?, ?)", (gid, date, time, homeid, awayid, winnerid, scorediff))
-        print(f'Row {i + 1} inserted.')
+        print(f'Game #{i + 1} inserted.')
     
     conn.commit()
 

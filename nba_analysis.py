@@ -16,120 +16,120 @@ path = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(path+'/'+'NBA.db')
 cur = conn.cursor()
 
-# def make_basic_charts(cur):
-#     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+def make_basic_charts(cur):
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
 
-#     cur.execute("SELECT FirstBuckets.points, ShotTypes.shot_type FROM FirstBuckets JOIN ShotTypes ON FirstBuckets.points = ShotTypes.points")
+    cur.execute("SELECT FirstBuckets.points, ShotTypes.shot_type FROM FirstBuckets JOIN ShotTypes ON FirstBuckets.points = ShotTypes.points")
 
-#     dct = {
-#         'Free Throw': 0,
-#         '2-Pointer': 0,
-#         '3-Pointer': 0,
-#     }
+    dct = {
+        'Free Throw': 0,
+        '2-Pointer': 0,
+        '3-Pointer': 0,
+    }
 
-#     for row in cur:
-#         dct[row[1]] += 1
+    for row in cur:
+        dct[row[1]] += 1
 
-#     labels = list(dct.keys())
-#     values = list(dct.values())
+    labels = list(dct.keys())
+    values = list(dct.values())
 
-#     axs[0].pie(values, labels=labels, autopct='%1.2f%%')
-#     axs[0].axis('equal')
-#     axs[0].set_title('First Basket Shot Type Distribution')
+    axs[0].pie(values, labels=labels, autopct='%1.2f%%')
+    axs[0].axis('equal')
+    axs[0].set_title('First Basket Shot Type Distribution')
 
-#     cur.execute("SELECT FirstBuckets.points, ShotTypes.shot_type, FirstBuckets.team_id, Games.winner_id FROM FirstBuckets "
-#                 "JOIN ShotTypes ON FirstBuckets.points = ShotTypes.points "
-#                 "JOIN Games ON FirstBuckets.game_id = Games.game_id")
+    cur.execute("SELECT FirstBuckets.points, ShotTypes.shot_type, FirstBuckets.team_id, Games.winner_id FROM FirstBuckets "
+                "JOIN ShotTypes ON FirstBuckets.points = ShotTypes.points "
+                "JOIN Games ON FirstBuckets.game_id = Games.game_id")
     
-#     tuples = []
+    tuples = []
 
-#     for row in cur:
-#         if row[2] == row[3]:
-#             tuples.append(row + ('Won',))
-#         if row[2] != row[3]:
-#             tuples.append(row + ('Lost',))
+    for row in cur:
+        if row[2] == row[3]:
+            tuples.append(row + ('Won',))
+        if row[2] != row[3]:
+            tuples.append(row + ('Lost',))
 
-#     df = pd.DataFrame(tuples, columns=['points', 'shot_type', 'team', 'winner', 'Outcome'])
+    df = pd.DataFrame(tuples, columns=['points', 'shot_type', 'team', 'winner', 'Outcome'])
 
-#     df.to_csv('basic_charts.csv')
+    df.to_csv('basic_charts.csv')
 
-#     sb.histplot(data = df, y = df['shot_type'], hue = df['Outcome'], multiple='stack', palette= ['mediumseagreen', 'red'])
+    sb.histplot(data = df, y = df['shot_type'], hue = df['Outcome'], multiple='stack', palette= ['mediumseagreen', 'red'])
 
-#     axs[1].set_xlabel('Occurences in February 2023 Games')
-#     axs[1].set_ylabel('')
-#     axs[1].set_title('First Basket Shot Type vs. Game Outcome')
-#     fig.tight_layout()
+    axs[1].set_xlabel('Occurences in February 2023 Games')
+    axs[1].set_ylabel('')
+    axs[1].set_title('First Basket Shot Type vs. Game Outcome')
+    fig.tight_layout()
 
-#     plt.show()
+    plt.show()
 
-# make_basic_charts(cur)
+make_basic_charts(cur)
 
-# def make_shotdistance_graph(cur): 
+def make_shotdistance_graph(cur): 
 
-#     cur.execute("SELECT DISTINCT Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
-#                 "FROM FirstBuckets "
-#                 "JOIN Games ON FirstBuckets.game_id = Games.game_id "
-#                 "JOIN Teams ON FirstBuckets.team_id = Teams.team_id ")
+    cur.execute("SELECT DISTINCT Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
+                "FROM FirstBuckets "
+                "JOIN Games ON FirstBuckets.game_id = Games.game_id "
+                "JOIN Teams ON FirstBuckets.team_id = Teams.team_id ")
 
-#     tuples = []
+    tuples = []
 
-#     for row in cur:
-#         if row[1] == row[2]:
-#             tuples.append(row + ('Won',))
-#         else:
-#             tuples.append(row + ('Lost',))
+    for row in cur:
+        if row[1] == row[2]:
+            tuples.append(row + ('Won',))
+        else:
+            tuples.append(row + ('Lost',))
 
 
-#     df = pd.DataFrame(tuples)
+    df = pd.DataFrame(tuples)
 
-#     df.to_csv('shot_distance.csv')
+    df.to_csv('shot_distance.csv')
 
-#     sb.scatterplot(data=df, x=0, y = 3, hue=6, palette= ['mediumseagreen', 'red'])
+    sb.scatterplot(data=df, x=0, y = 3, hue=6, palette= ['mediumseagreen', 'red'])
 
-#     plt.xlabel('Games in February 2023 (by Game ID)')
-#     plt.ylabel('Shot Distance (by ft.)')
+    plt.xlabel('Games in February 2023 (by Game ID)')
+    plt.ylabel('Shot Distance (by ft.)')
 
-#     plt.title('First Basket Shot Distance vs. Game Outcome')
-#     plt.show()
+    plt.title('First Basket Shot Distance vs. Game Outcome')
+    plt.show()
 
-# make_shotdistance_graph(cur)
+make_shotdistance_graph(cur)
 
-# def make_shotchart(cur):
-#     cur.execute("SELECT FirstBuckets.xpos, FirstBuckets.ypos, FirstBuckets.game_id, FirstBuckets.team_id, Games.home_team_id FROM FirstBuckets JOIN Games ON FirstBuckets.game_id = Games.game_id")
+def make_shotchart(cur):
+    cur.execute("SELECT FirstBuckets.xpos, FirstBuckets.ypos, FirstBuckets.game_id, FirstBuckets.team_id, Games.home_team_id FROM FirstBuckets JOIN Games ON FirstBuckets.game_id = Games.game_id")
 
-#     tuples = []
+    tuples = []
 
-#     for row in cur:
-#         if row[3] == row[4]:
-#             tuples.append(row + ('Home', ))
-#         if row[3] != row[4]:
-#             tuples.append(row + ('Away', ))
+    for row in cur:
+        if row[3] == row[4]:
+            tuples.append(row + ('Home', ))
+        if row[3] != row[4]:
+            tuples.append(row + ('Away', ))
 
-#     ftpos_home = {'xpos': 20.21, 'ypos': 50}
-#     ftpos_away = {'xpos': 79.79, 'ypos': 50}
+    ftpos_home = {'xpos': 20.21, 'ypos': 50}
+    ftpos_away = {'xpos': 79.79, 'ypos': 50}
 
-#     df = pd.DataFrame(tuples, columns=['xpos', 'ypos', 'game_id', 'team_id', 'hometeam_id', 'Status'])
+    df = pd.DataFrame(tuples, columns=['xpos', 'ypos', 'game_id', 'team_id', 'hometeam_id', 'Status'])
 
-#     df.to_csv('shot_chart.csv')
+    df.to_csv('shot_chart.csv')
 
-#     pd.set_option('display.max_rows', 1000)
+    pd.set_option('display.max_rows', 1000)
 
-#     df.loc[df['Status'] == 'Home', ['xpos', 'ypos']] = df.loc[df['Status'] == 'Home', ['xpos', 'ypos']].fillna(value=ftpos_home)
-#     df.loc[df['Status'] == 'Away', ['xpos', 'ypos']] = df.loc[df['Status'] == 'Away', ['xpos', 'ypos']].fillna(value=ftpos_away)
+    df.loc[df['Status'] == 'Home', ['xpos', 'ypos']] = df.loc[df['Status'] == 'Home', ['xpos', 'ypos']].fillna(value=ftpos_home)
+    df.loc[df['Status'] == 'Away', ['xpos', 'ypos']] = df.loc[df['Status'] == 'Away', ['xpos', 'ypos']].fillna(value=ftpos_away)
 
-#     sb.set(rc={"figure.figsize":(9.4, 5)})
+    sb.set(rc={"figure.figsize":(9.4, 5)})
 
-#     g = sb.scatterplot(x = 'xpos', y = 'ypos', s=80, hue = 'Status', data=df, palette=['#1D42BA', '#C8102E'])
-#     ax = plt.gca()
+    g = sb.scatterplot(x = 'xpos', y = 'ypos', s=80, hue = 'Status', data=df, palette=['#1D42BA', '#C8102E'])
+    ax = plt.gca()
 
-#     ax.set_xticks([])
-#     ax.set_yticks([])
-#     plt.xlabel('94 ft.')
-#     plt.ylabel('50 ft.')
-#     plt.title('NBA First Basket (Made) Shot Chart')
-#     plt.show()
+    ax.set_xticks([])
+    ax.set_yticks([])
+    plt.xlabel('94 ft.')
+    plt.ylabel('50 ft.')
+    plt.title('NBA First Basket (Made) Shot Chart')
+    plt.show()
 
-# make_shotchart(cur)
+make_shotchart(cur)
 
 def make_conversion_graph(cur):
     cur.execute("SELECT DISTINCT Games.day, Teams.team_name, FirstBuckets.team_id, Games.winner_id, Games.score_diff "
