@@ -20,7 +20,7 @@ def make_charts(cur):
     df = pd.DataFrame(cur, columns=['Day', 'page', 'Word Count', 'Print Status'])
 
     sb.scatterplot(data=df, x=df['Day'], y=df['Word Count'], hue=df['Print Status'])
-    plt.title('NYT Sports Articles, Feb. 2023')
+    plt.title('NYT Sports Articles, March 2023')
     plt.tight_layout()
 
     mean_printed = df[df['Print Status'] == 'Printed']['Word Count'].mean()
