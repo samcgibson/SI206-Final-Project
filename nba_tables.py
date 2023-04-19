@@ -53,29 +53,6 @@ def make_games_table(list, cur, conn):
     
     conn.commit()
 
-def make_players_table(list, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS Players (player_id INTEGER PRIMARY KEY, player_name TEXT UNIQUE)")
-
-    cur.execute("SELECT COUNT(*) FROM Players")
-    result = cur.fetchone()[0]
-
-    for i in range(result, result + 25):
-        if i >= len(list):
-            break
-        pbp = playbyplay.PlayByPlay(list[i])
-        data = pbp.get_dict()
-        for shot in data['game']['actions']:
-            if shot['period'] == 1 and shot.get('shotResult') == 'Made':
-                
-                pname = shot['playerNameI']
-                pid = shot['personId']
-                break
-
-        cur.execute("INSERT OR IGNORE INTO Players (player_id, player_name) VALUES (?, ?)", (pid, pname))
-        print(f'Inserted {pname} ({pid}) into the database (Row {i +1}).')   
-
-    conn.commit()
-
 def make_teams_table(cur, conn):
     teamlist = teams.get_teams()
     cur.execute("CREATE TABLE IF NOT EXISTS Teams (team_id INTEGER PRIMARY KEY, team_name TEXT UNIQUE)")
@@ -135,7 +112,6 @@ def make_shottype_table(cur, conn):
     conn.commit()
 
 make_games_table(gameIdList, cur, conn)
-# make_players_table(gameIdList, cur, conn)
 make_teams_table(cur, conn)
 make_firstbucket_table(gameIdList, cur, conn)
 make_shottype_table(cur, conn)

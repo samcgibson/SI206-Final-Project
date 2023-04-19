@@ -66,15 +66,15 @@ make_basic_charts(cur)
 
 def make_shotdistance_graph(cur): 
 
-    cur.execute("SELECT DISTINCT Players.player_name, Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
-                "FROM FirstBuckets JOIN Players ON FirstBuckets.player_id = Players.player_id "
+    cur.execute("SELECT DISTINCT Games.game_id, FirstBuckets.team_id, Games.winner_id, FirstBuckets.shot_distance, FirstBuckets.points, Teams.team_name "
+                "FROM FirstBuckets "
                 "JOIN Games ON FirstBuckets.game_id = Games.game_id "
                 "JOIN Teams ON FirstBuckets.team_id = Teams.team_id ")
 
     tuples = []
 
     for row in cur:
-        if row[2] == row[3]:
+        if row[1] == row[2]:
             tuples.append(row + ('Won',))
         else:
             tuples.append(row + ('Lost',))
@@ -84,7 +84,7 @@ def make_shotdistance_graph(cur):
 
     df.to_csv('shot_distance.csv')
 
-    sb.scatterplot(data=df, x=1, y = 4, hue=7, palette= ['mediumseagreen', 'red'])
+    sb.scatterplot(data=df, x=0, y = 3, hue=6, palette= ['mediumseagreen', 'red'])
 
     plt.xlabel('Games in February 2023 (by Game ID)')
     plt.ylabel('Shot Distance (by ft.)')
