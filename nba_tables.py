@@ -19,7 +19,7 @@ def open_database(db_name):
     cur = conn.cursor()
     return cur, conn
 
-cur, conn = open_database('NBAtest.db')
+cur, conn = open_database('NBA.db')
 
 def make_games_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
@@ -29,6 +29,7 @@ def make_games_table(list, cur, conn):
 
     for i in range(result, result + 25):
         if i >= len(list):
+            print('-----GAMES TABLE DONE-----')
             break
         box = boxscore.BoxScore(list[i])
         data = box.get_dict()
@@ -62,9 +63,10 @@ def make_teams_table(cur, conn):
     
     for i in range(result, result + 25):
         if i >= 30:
+            print('-----TEAMS TABLE DONE-----')
             break
         cur.execute("INSERT OR IGNORE INTO Teams (team_id, team_name) VALUES (?, ?)", (teamlist[i]['id'], teamlist[i]['full_name']))
-        print(f'Added team #{i}.')
+        print(f'Added team #{i+1}.')
 
     conn.commit()
 
@@ -76,6 +78,7 @@ def make_firstbucket_table(list, cur, conn):
 
     for i in range(result, result + 25):
         if i >= len(list):
+            print('-----FIRSTBUCKETS TABLE DONE-----')
             break
         pbp = playbyplay.PlayByPlay(list[i])
         data = pbp.get_dict()
@@ -108,13 +111,15 @@ def make_shottype_table(cur, conn):
             cur.execute("INSERT OR IGNORE INTO ShotTypes (points, shot_type) VALUES (?, ?)", (2, '2-Pointer'))
         if i == 2:
             cur.execute("INSERT OR IGNORE INTO ShotTypes (points, shot_type) VALUES (?, ?)", (3, '3-Pointer'))
+            print('-----SHOTTYPE TABLE DONE-----')
+
         
     conn.commit()
 
 def main():
     make_games_table(gameIdList, cur, conn)
-    make_teams_table(cur, conn)
     make_firstbucket_table(gameIdList, cur, conn)
+    make_teams_table(cur, conn)
     make_shottype_table(cur, conn)
 
 main()
