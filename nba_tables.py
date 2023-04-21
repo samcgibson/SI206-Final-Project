@@ -19,7 +19,7 @@ def open_database(db_name):
     cur = conn.cursor()
     return cur, conn
 
-cur, conn = open_database('NBA.db')
+cur, conn = open_database('NBAtest.db')
 
 def make_games_table(list, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS Games (game_id INTEGER PRIMARY KEY, day INTEGER, time INTEGER, home_team_id INTEGER, away_team_id INTEGER, winner_id INTEGER, score_diff INTEGER)")
@@ -111,7 +111,10 @@ def make_shottype_table(cur, conn):
         
     conn.commit()
 
-make_games_table(gameIdList, cur, conn)
-make_teams_table(cur, conn)
-make_firstbucket_table(gameIdList, cur, conn)
-make_shottype_table(cur, conn)
+def main():
+    make_games_table(gameIdList, cur, conn)
+    make_teams_table(cur, conn)
+    make_firstbucket_table(gameIdList, cur, conn)
+    make_shottype_table(cur, conn)
+
+main()
