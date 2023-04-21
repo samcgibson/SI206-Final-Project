@@ -151,12 +151,11 @@ def make_conversion_graph(cur):
 
     df = pd.DataFrame(tuples, columns=['day', 'team', 'team_id', 'winner_id', 'Score Difference', 'Result'])
 
-    df.to_csv('conversion_graph.csv')
-
     sb.set(rc={"figure.figsize":(12, 7.5)})
 
     plot_order = df.sort_values(by='Score Difference', ascending=False)
-    print(plot_order)
+
+    plot_order.to_csv('conversion_graph.csv')
 
     g = sb.scatterplot(data = plot_order, x = 'day', y = 'team', hue = 'Result', size = 'Score Difference', sizes=(20, 500), alpha=.95, palette=["#1D42BA", "#C8102E"], legend='brief')
     g.legend_.set_title(None)
